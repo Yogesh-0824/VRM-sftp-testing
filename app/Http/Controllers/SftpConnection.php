@@ -98,10 +98,20 @@ class SftpConnection extends Controller
         $sftp = Storage::disk('sftp');
         try {
             $files = count($sftp->files(config('env_var.PENDING_DIR')));
-            $message ="There are $files files in ".config('env_var.PENDING_DIR')." folder";
+            $message ="Success. There are $files files in ".config('env_var.PENDING_DIR')." folder";
         }catch (Exception $e){
             $message=$e->getMessage();
         }
     return back()->withErrors([$message]);
+    }
+
+    public function ping(){
+        $sftp = Storage::disk('sftp');
+        try {
+            $files = count($sftp->files(config('env_var.PENDING_DIR')));
+            return true;
+        }catch (Exception $e){
+            return $e->getMessage();
+        }
     }
 }

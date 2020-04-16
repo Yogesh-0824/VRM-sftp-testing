@@ -17,6 +17,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('sftp','SftpConnection@index');
-Route::get('p1','SftpConnection@process1');
-Route::get('com','SftpConnection@copyCompletedFiles');
+Route::get('p1','Process_one@index');
+Route::get('com','PostProcessingTask@index');
 Route::get('test','SftpConnection@testConnection')->name('pingSftp');
