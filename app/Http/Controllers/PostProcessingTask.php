@@ -16,7 +16,7 @@ class PostProcessingTask extends Controller
         if($conStatus === true){
             $tasks =[];
             try{
-                $tasks = parentJobList::select('id','file_name')->where('task_status','=',1)->get();
+                $tasks = parentJobList::select('id','file_name')->where('task_status','=',2)->get();
             }catch (Exception $e){
                 Log::critical("Conroller: PostProcessingTask | ".$e->getMessage());
                 die();
@@ -26,7 +26,7 @@ class PostProcessingTask extends Controller
                 foreach($tasks as  $task){
                     $sftp->move($task->file_name,str_ireplace(config('env_var.PENDING_DIR'),config('env_var.COMPLETED_DIR'),$task->file_name));
                     $updating = parentJobList::find($task->id);
-                    $updating->task_status = 2;
+                    $updating->task_status = 3;
                     $updating->save();
                     Log::info("Conroller: PostProcessingTask | Movement Completed For ".$task->id);
                 }

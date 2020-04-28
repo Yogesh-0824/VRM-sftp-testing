@@ -12,6 +12,11 @@ class SftpConnection extends Controller
 {
     //
     public function index(){
+        $conStatus = app(SftpConnection::class)->ping();
+        if($conStatus !== true){
+            Log::critical("Conroller: SftpConnection | ".$conStatus);
+            die();
+        }
         $sftp = Storage::disk('sftp');
         $files=$sftp->files(config('env_var.PENDING_DIR'));
         if($files)
@@ -24,7 +29,10 @@ class SftpConnection extends Controller
                 }else{
                     $insertData = new parentJobList;
                     $insertData->file_name = $file;
-                    $insertData->process_id = 1;
+                    if(stripos($file,'Partial'))
+                        $insertData->process_id = 2;
+                    else if(stripos($file,'Master'))
+                        $insertData->process_id = 1;
                     $insertData->task_status = 0;
                     $insertData->save();
                 }

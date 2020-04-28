@@ -10,7 +10,7 @@ use App\custData;
 use Carbon\Carbon;
 use Exception;
 
-class Process_one extends Controller
+class Process_two extends Controller
 {
     //
     public function index(){
@@ -24,7 +24,7 @@ class Process_one extends Controller
         // dump(" MAX NEW ".config('env_var.MAX_PROCESS'));
         //catch error
         try{
-            $tasks = parentJobList::select('id','file_name')->where([['process_id','=',1],['task_status','<',1]])->get();
+            $tasks = parentJobList::select('id','file_name')->where([['process_id','=',2],['task_status','<',1]])->get();
         }catch (Exception $e){
             Log::critical("Conroller: Process_one | ".$e->getMessage());
             die();
@@ -91,9 +91,14 @@ class Process_one extends Controller
     private function insertToModel($csv){
         $flag = true;
         foreach($csv as $key=>$row){
-            $insertData = new custData;
+            $insertData = custData::where('user_id',$row['user_id'])
+                                    ->firstOr(function(){
+                                        $flag = false;
+                                        $message[$key] = 'Cannot find entry for user_id: '. $row->user_id;
+                                    });
             foreach($row as $col=>$val){
-                $insertData->$col=$val;
+                if($val !='~')
+                    $insertData->$col=$val;
             }
             try{
             $insertData->save();
@@ -123,5 +128,4 @@ class Process_one extends Controller
         // ... and return the $data to the caller, with the trailing newline from fgets() removed.
         return rtrim($data, "\n");
     }
-    
 }

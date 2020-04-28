@@ -18,5 +18,6 @@ Route::get('/', function () {
 });
 Route::get('sftp','SftpConnection@index');
 Route::get('p1','Process_one@index');
+Route::get('p2','Process_two@index');
 Route::get('com','PostProcessingTask@index');
 Route::get('test','SftpConnection@testConnection')->name('pingSftp');
